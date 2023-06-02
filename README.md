@@ -164,6 +164,14 @@ Before we proceed, make sure you clean up your AWS resources by running
 $ terraform destroy
 ```
 
+### Building the validator module
+
+Step into the `shipment-picture-lambda-validator` module and run `mvn clean package shade:shade`.
+This will create an uber-jar by packaging all its dependencies. We'll need this one in the next
+step.
+
+### Creating resources - running Terraform
+
 To generate the exact same resources on LocalStack, we need `tflocal`, a thin wrapper script around
 the terraform command line client. `tflocal` takes care of automatically configuring the local
 service
@@ -190,12 +198,22 @@ to get rid of any files that keep track of the resources' state. Then:
 
 ```
 $ tflocal init
-$ tflocal plan -var 'env=dev
+$ tflocal plan -var 'env=dev`
 $ tflocal apply
 ```
 
 What we're doing here is just passing an environmental variable to let the Lambda
 know this is the `dev` environment.
+
+
+### Running the GUI
+
+Now `cd` into `src/main/shipment-list-frontend` and run `npm install` and `npm start`.
+This will spin up the React app that can be accessed on `localhost:3000`.
+
+For running it on Windows, there are some
+[extra requirements](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/react-on-windows)
+,but no worries, it should be straightforward.
 
 After that, the Spring Boot application needs to start using the dev profile (make sure you're in
 the
@@ -209,5 +227,3 @@ Go back to `localhost:3000` and a new list will be available; notice that the fu
 the application have not changed.
 
 There you have it, smooth transition from AWS to Localstack, with no code change. 👍🏻
-
-
